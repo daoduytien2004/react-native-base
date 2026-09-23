@@ -1,10 +1,10 @@
 import ListHeading from "@/components/ListHeading";
 import SubscriptionCard from "@/components/SubscriptionCard";
 import UpcomingSubscriptionCard from "@/components/UpcomingSubscriptionCard";
+import { useUser } from "@clerk/expo";
 import {
   HOME_BALANCE,
   HOME_SUBSCRIPTIONS,
-  HOME_USER,
   UPCOMING_SUBSCRIPTIONS,
 } from "@/constants/data";
 import { icons } from "@/constants/icon";
@@ -18,6 +18,12 @@ import { FlatList, Image, Text, View } from "react-native";
 import { SafeAreaView as RNSafeAreaView } from "react-native-safe-area-context";
 const SafeAreaView = styled(RNSafeAreaView);
 export default function App() {
+  const { user } = useUser();
+  const displayName =
+    user?.fullName ||
+    user?.primaryEmailAddress?.emailAddress.split("@")[0] ||
+    "Your account";
+  const avatarSource = user?.imageUrl ? { uri: user.imageUrl } : images.avatar;
   const [expandedSubscriptionId, setExpandedSubscriptionsId] = useState<
     string | null
   >(null);
@@ -28,8 +34,8 @@ export default function App() {
           <>
             <View className="home-header">
               <View className="home-user">
-                <Image source={images.avatar} className="home-avatar" />
-                <Text className="home-user-name">{HOME_USER.name}</Text>
+                <Image source={avatarSource} className="home-avatar" />
+                <Text className="home-user-name">{displayName}</Text>
               </View>
               <Image source={icons.add} className="home-add-icon" />
             </View>
